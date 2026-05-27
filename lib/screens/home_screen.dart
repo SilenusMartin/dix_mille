@@ -119,41 +119,109 @@ class HomeScreen extends StatelessWidget {
         spacing: 30,
         runSpacing: 16,
         children: [
-          _buildNumberInput('But:', gameState.targetScore, !gameState.hasGameStarted, Colors.green.shade200, const OutlineInputBorder(), (val) {
-            gameState.updateTargetScore(val);
-          }),
-          _buildNumberInput('Borne 1:', gameState.boundary1, !gameState.hasGameStarted, null, OutlineInputBorder(borderSide: BorderSide(color: Colors.amber.shade700, width: 2.0)), (val) {
-            gameState.updateBoundary1(val);
-          }),
-          _buildNumberInput('Borne 2:', gameState.boundary2, !gameState.hasGameStarted, Colors.yellow.shade100, const OutlineInputBorder(), (val) {
-            gameState.updateBoundary2(val);
-          }),
+          DynamicNumberInput(
+            label: 'But:',
+            value: gameState.targetScore,
+            enabled: !gameState.hasGameStarted,
+            fillColor: Colors.green.shade200,
+            border: const OutlineInputBorder(),
+            onChanged: (val) {
+              gameState.updateTargetScore(val);
+            },
+          ),
+          DynamicNumberInput(
+            label: 'Borne 1:',
+            value: gameState.boundary1,
+            enabled: !gameState.hasGameStarted,
+            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.amber.shade700, width: 2.0)),
+            onChanged: (val) {
+              gameState.updateBoundary1(val);
+            },
+          ),
+          DynamicNumberInput(
+            label: 'Borne 2:',
+            value: gameState.boundary2,
+            enabled: !gameState.hasGameStarted,
+            fillColor: Colors.yellow.shade100,
+            border: const OutlineInputBorder(),
+            onChanged: (val) {
+              gameState.updateBoundary2(val);
+            },
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildNumberInput(String label, int value, bool enabled, Color? fillColor, InputBorder border, Function(int) onChanged) {
+class DynamicNumberInput extends StatefulWidget {
+  final String label;
+  final int value;
+  final bool enabled;
+  final Color? fillColor;
+  final InputBorder border;
+  final ValueChanged<int> onChanged;
+
+  const DynamicNumberInput({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.enabled,
+    this.fillColor,
+    required this.border,
+    required this.onChanged,
+  });
+
+  @override
+  State<DynamicNumberInput> createState() => _DynamicNumberInputState();
+}
+
+class _DynamicNumberInputState extends State<DynamicNumberInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value.toString());
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicNumberInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final currentVal = int.tryParse(_controller.text);
+    if (currentVal != widget.value) {
+      _controller.text = widget.value.toString();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       width: 150,
       child: TextFormField(
-        initialValue: value.toString(),
-        enabled: enabled,
+        controller: _controller,
+        enabled: widget.enabled,
         decoration: InputDecoration(
-          labelText: label,
-          border: border,
-          enabledBorder: border,
-          focusedBorder: border,
-          disabledBorder: border,
-          filled: fillColor != null,
-          fillColor: fillColor,
+          labelText: widget.label,
+          border: widget.border,
+          enabledBorder: widget.border,
+          focusedBorder: widget.border,
+          disabledBorder: widget.border,
+          filled: widget.fillColor != null,
+          fillColor: widget.fillColor,
           isDense: true,
         ),
         keyboardType: TextInputType.number,
         onChanged: (v) {
           int? parsed = int.tryParse(v);
           if (parsed != null) {
-            onChanged(parsed);
+            widget.onChanged(parsed);
           }
         },
       ),
