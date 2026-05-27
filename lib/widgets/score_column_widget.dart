@@ -67,6 +67,7 @@ class ScoreColumnWidget extends StatelessWidget {
   }
 
   Widget _buildColumnHeader(BuildContext context, GameState gameState) {
+    final col = gameState.columns[columnIndex];
     return Container(
       color: Colors.blue.shade100,
       padding: const EdgeInsets.all(8.0),
