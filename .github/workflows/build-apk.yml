@@ -11,8 +11,6 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
@@ -40,5 +38,5 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DixMilleScore-Android-APK
+          name: DixMille-Android-APK
           path: build/app/outputs/flutter-apk/app-release.apk
