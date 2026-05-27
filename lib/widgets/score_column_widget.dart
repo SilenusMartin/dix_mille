@@ -99,16 +99,11 @@ class ScoreColumnWidget extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    initialValue: col.players[i],
+                  child: PlayerNameInput(
+                    initialName: col.players[i],
                     autofocus: col.players[i].isEmpty,
                     enabled: !gameState.hasGameStarted,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    decoration: InputDecoration(
-                      labelText: gameState.hasGameStarted ? null : (i == 0 ? 'Joueur' : 'Joueur supplémentaire'),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    ),
+                    labelText: gameState.hasGameStarted ? null : (i == 0 ? 'Joueur' : 'Joueur supplémentaire'),
                     onChanged: (val) {
                       gameState.updatePlayerName(columnIndex, i, val);
                       // Trigger a notify only when all names are filled to enable the button
@@ -187,6 +182,66 @@ class ScoreColumnWidget extends StatelessWidget {
           Text(col.totalScore.toString(), style: TextStyle(fontSize: 22, fontWeight: weight)),
         ],
       ),
+    );
+  }
+}
+
+class PlayerNameInput extends StatefulWidget {
+  final String initialName;
+  final bool autofocus;
+  final bool enabled;
+  final String? labelText;
+  final ValueChanged<String> onChanged;
+
+  const PlayerNameInput({
+    super.key,
+    required this.initialName,
+    required this.autofocus,
+    required this.enabled,
+    this.labelText,
+    required this.onChanged,
+  });
+
+  @override
+  State<PlayerNameInput> createState() => _PlayerNameInputState();
+}
+
+class _PlayerNameInputState extends State<PlayerNameInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialName);
+  }
+
+  @override
+  void didUpdateWidget(covariant PlayerNameInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialName != _controller.text) {
+      _controller.text = widget.initialName;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _controller,
+      autofocus: widget.autofocus,
+      enabled: widget.enabled,
+      style: const TextStyle(fontWeight: FontWeight.bold),
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      ),
+      onChanged: widget.onChanged,
     );
   }
 }
