@@ -11,26 +11,126 @@ class HomeScreen extends StatelessWidget {
     final gameState = Provider.of<GameState>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
+      body: SafeArea(
+        child: Column(
           children: [
-            const Icon(Icons.casino, size: 28),
-            const SizedBox(width: 8),
-            Text(
-              'Le 10000 à six dés',
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 22,
-                letterSpacing: 1.0,
-                shadows: [
-                  Shadow(offset: const Offset(1, 1), blurRadius: 2.0, color: Colors.black.withOpacity(0.3)),
+            _buildTopBar(context, gameState),
+            const Divider(),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(
+                            gameState.columns.length,
+                            (index) => Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: ScoreColumnWidget(columnIndex: index),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 60,
+                    alignment: Alignment.topCenter,
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: IconButton(
+                      icon: Icon(Icons.add_circle, size: 40, color: gameState.hasGameStarted ? Colors.grey : Colors.blue),
+                      onPressed: gameState.hasGameStarted ? null : () {
+                        gameState.addColumn();
+                      },
+                      tooltip: 'Ajouter une équipe',
+                    ),
+                  )
                 ],
               ),
             ),
           ],
         ),
-        actions: [
+      ),
+    );
+  }
+
+  Widget _buildTopBar(BuildContext context, GameState gameState) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 24,
+              runSpacing: 12,
+              children: [
+                // Titre
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.casino, size: 28, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Le 10000 à six dés',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 22,
+                        letterSpacing: 1.0,
+                        color: Colors.blue.shade900,
+                        shadows: [
+                          Shadow(offset: const Offset(1, 1), blurRadius: 2.0, color: Colors.black.withOpacity(0.1)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                // Paramètres (Bornes)
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 12,
+                  children: [
+                    DynamicNumberInput(
+                      label: 'But:',
+                      value: gameState.targetScore,
+                      enabled: !gameState.hasGameStarted,
+                      fillColor: Colors.green.shade200,
+                      border: const OutlineInputBorder(),
+                      onChanged: (val) {
+                        gameState.updateTargetScore(val);
+                      },
+                    ),
+                    DynamicNumberInput(
+                      label: 'Borne 1:',
+                      value: gameState.boundary1,
+                      enabled: !gameState.hasGameStarted,
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.amber.shade700, width: 2.0)),
+                      onChanged: (val) {
+                        gameState.updateBoundary1(val);
+                      },
+                    ),
+                    DynamicNumberInput(
+                      label: 'Borne 2:',
+                      value: gameState.boundary2,
+                      enabled: !gameState.hasGameStarted,
+                      fillColor: Colors.yellow.shade100,
+                      border: const OutlineInputBorder(),
+                      onChanged: (val) {
+                        gameState.updateBoundary2(val);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // Bouton Menu
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'nouvelle') {
@@ -61,92 +161,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ],
-            icon: const Icon(Icons.menu),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildSettingsBar(context, gameState),
-          const Divider(),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(
-                          gameState.columns.length,
-                          (index) => Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ScoreColumnWidget(columnIndex: index),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 60,
-                  alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: IconButton(
-                    icon: Icon(Icons.add_circle, size: 40, color: gameState.hasGameStarted ? Colors.grey : Colors.blue),
-                    onPressed: gameState.hasGameStarted ? null : () {
-                      gameState.addColumn();
-                    },
-                    tooltip: 'Ajouter une équipe',
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsBar(BuildContext context, GameState gameState) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        spacing: 30,
-        runSpacing: 16,
-        children: [
-          DynamicNumberInput(
-            label: 'But:',
-            value: gameState.targetScore,
-            enabled: !gameState.hasGameStarted,
-            fillColor: Colors.green.shade200,
-            border: const OutlineInputBorder(),
-            onChanged: (val) {
-              gameState.updateTargetScore(val);
-            },
-          ),
-          DynamicNumberInput(
-            label: 'Borne 1:',
-            value: gameState.boundary1,
-            enabled: !gameState.hasGameStarted,
-            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.amber.shade700, width: 2.0)),
-            onChanged: (val) {
-              gameState.updateBoundary1(val);
-            },
-          ),
-          DynamicNumberInput(
-            label: 'Borne 2:',
-            value: gameState.boundary2,
-            enabled: !gameState.hasGameStarted,
-            fillColor: Colors.yellow.shade100,
-            border: const OutlineInputBorder(),
-            onChanged: (val) {
-              gameState.updateBoundary2(val);
-            },
+            icon: const Icon(Icons.menu, size: 28),
           ),
         ],
       ),
