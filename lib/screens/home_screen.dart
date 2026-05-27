@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildTopBarPlaceholder(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 8.0, 12.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -70,11 +70,11 @@ class HomeScreen extends StatelessWidget {
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 24,
-              runSpacing: 12,
+              runSpacing: 6,
               children: [
-                // Placeholder pour le Titre (même hauteur et dimensions approximatives)
+                // Placeholder pour le Titre (hauteur réduite de moitié)
                 const SizedBox(
-                  height: 30,
+                  height: 15,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -83,21 +83,21 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Placeholders pour les Paramètres (Bornes)
+                // Placeholders pour les Paramètres (hauteur de chaque champ réduite de moitié)
                 const Wrap(
                   spacing: 16,
-                  runSpacing: 12,
+                  runSpacing: 6,
                   children: [
-                    SizedBox(width: 150, height: 48),
-                    SizedBox(width: 150, height: 48),
-                    SizedBox(width: 150, height: 48),
+                    SizedBox(width: 150, height: 24),
+                    SizedBox(width: 150, height: 24),
+                    SizedBox(width: 150, height: 24),
                   ],
                 ),
               ],
             ),
           ),
-          // Placeholder pour le Bouton Menu
-          const SizedBox(width: 28, height: 28),
+          // Placeholder pour le Bouton Menu (hauteur réduite de moitié)
+          const SizedBox(width: 28, height: 14),
         ],
       ),
     );
