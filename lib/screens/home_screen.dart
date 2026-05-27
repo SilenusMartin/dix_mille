@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildTopBarPlaceholder(context),
+            const SizedBox(height: 20.0),
             _buildTopBar(context, gameState),
             const Divider(),
             Expanded(
@@ -56,49 +56,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopBarPlaceholder(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 6.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 24,
-              runSpacing: 6,
-              children: [
-                // Placeholder pour le Titre (hauteur réduite de moitié)
-                const SizedBox(
-                  height: 15,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 28 + 8), // Dimension de l'icône + espacement
-                      SizedBox(width: 200), // Largeur approximative du texte de titre
-                    ],
-                  ),
-                ),
-                // Placeholders pour les Paramètres (hauteur de chaque champ réduite de moitié)
-                const Wrap(
-                  spacing: 16,
-                  runSpacing: 6,
-                  children: [
-                    SizedBox(width: 150, height: 24),
-                    SizedBox(width: 150, height: 24),
-                    SizedBox(width: 150, height: 24),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          // Placeholder pour le Bouton Menu (hauteur réduite de moitié)
-          const SizedBox(width: 28, height: 14),
-        ],
       ),
     );
   }
